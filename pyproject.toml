@@ -1,0 +1,12 @@
+[build-system]
+requires = ["setuptools", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "gala-deck"
+version = "0.1.0"
+description = "A deck management application"
+readme = "README.md"
+license = {text = "LICENSE"}
+requires-python = ">=3.8"
+dependencies = []

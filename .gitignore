@@ -2,6 +2,10 @@
 __pycache__/
 *.py[codz]
 *$py.class
+.venv
+.env
+vapi-doc-coding-mcp/
+.streamlit/
 
 # C extensions
 *.so

@@ -1,0 +1,6 @@
+# Clone the repository
+git clone https://github.com/vedicastroapidev/vapi-doc-coding-mcp.git
+cd vapi-doc-coding-mcp
+
+# Install dependencies (assuming it uses npm/node)
+npm install
