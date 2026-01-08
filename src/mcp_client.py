@@ -8,7 +8,7 @@ import subprocess
 from typing import List, Dict, Any
 from mcp import ClientSession, StdioServerParameters
 from mcp.client.stdio import StdioServerParameters as StdioParams
-from mcp.client.stdio import get_default_environment
+from mcp.client.stdio import get_default_environment, stdio_client
 from contextlib import asynccontextmanager
 
 import logging
@@ -26,8 +26,6 @@ class MCPClient:
     @asynccontextmanager
     async def get_tools_and_session(self):
         """Create MCP connection using direct subprocess"""
-        from mcp.client.stdio import stdio_client
-
         params = StdioServerParameters(
             command=self.command,
             args=self.args,
@@ -44,12 +42,10 @@ class MCPClient:
             session = ClientSession(read, write)
 
             logger.info("Calling session.initialize()...")
-            # ← Add timeout back
             await asyncio.wait_for(session.initialize(), timeout=10.0)
             logger.info("Session initialized successfully!")
 
             logger.info("Calling session.list_tools()...")
-            # ← Add timeout back
             tools_result = await asyncio.wait_for(session.list_tools(), timeout=10.0)
             logger.info(f"Got {len(tools_result.tools)} tools")
 

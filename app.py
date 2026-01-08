@@ -41,7 +41,7 @@ if "chat_handler" not in st.session_state:
 if "messages" not in st.session_state:
     st.session_state.messages = []
 
-# Initialize session totals (OPTIONAL - for tracking across requests)
+# Initialize session totals
 if "total_usage" not in st.session_state:
     st.session_state.total_usage = {
         "input_tokens": 0,
@@ -50,10 +50,44 @@ if "total_usage" not in st.session_state:
         "request_count": 0,
     }
 
-# Display chat history
-for message in st.session_state.messages:
-    with st.chat_message(message["role"]):
-        st.markdown(message["content"])
+
+def display_chat_history():
+    for message in st.session_state.messages:
+        with st.chat_message(message["role"]):
+            st.markdown(message["content"])
+
+
+def process_user_input(prompt):
+    # Add user message
+    st.session_state.messages.append({"role": "user", "content": prompt})
+    with st.chat_message("user"):
+        st.markdown(prompt)
+
+    # Get assistant response
+    with st.chat_message("assistant"):
+        with st.spinner("Thinking..."):
+            response, usage = st.session_state.chat_handler.chat(
+                st.session_state.messages)
+            st.markdown(response)
+
+            # Update usage stats
+            update_usage_stats(usage)
+
+    # Add assistant message
+    st.session_state.messages.append(
+        {"role": "assistant", "content": response})
+
+
+def update_usage_stats(usage):
+    if usage:
+        cost = calculate_cost(usage)
+        st.session_state.total_usage["input_tokens"] += usage.get(
+            "input_tokens", 0)
+        st.session_state.total_usage["output_tokens"] += usage.get(
+            "output_tokens", 0)
+        st.session_state.total_usage["total_cost"] += cost
+        st.session_state.total_usage["request_count"] += 1
+
 
 # Sidebar
 with st.sidebar:
@@ -102,50 +136,4 @@ with st.sidebar:
 
 # Chat input
 if prompt := st.chat_input(CHAT_PLACEHOLDER):
-    # Add user message
-    st.session_state.messages.append({"role": "user", "content": prompt})
-    with st.chat_message("user"):
-        st.markdown(prompt)
-
-    # Get assistant response
-    with st.chat_message("assistant"):
-        with st.spinner("Thinking..."):
-            response, usage = st.session_state.chat_handler.chat(
-                st.session_state.messages)
-            st.markdown(response)
-
-            # Display usage stats for THIS request
-            if usage:
-                with st.expander("📊 Token Usage & Cost", expanded=False):
-                    col1, col2, col3, col4 = st.columns(4)
-                    with col1:
-                        st.metric("Input", usage.get("input_tokens", 0))
-                    with col2:
-                        st.metric("Output", usage.get("output_tokens", 0))
-                    with col3:
-                        total = usage.get("input_tokens", 0) + \
-                            usage.get("output_tokens", 0)
-                        st.metric("Total", total)
-                    with col4:
-                        cost = calculate_cost(usage)
-                        st.metric("Cost", f"${cost:.4f}")
-
-                    # Show cache stats if available
-                    if usage.get("cache_read_input_tokens", 0) > 0:
-                        st.info(
-                            f"💾 Cache hits: {usage['cache_read_input_tokens']} tokens")
-                    if usage.get("cache_creation_input_tokens", 0) > 0:
-                        st.info(
-                            f"💾 Cache writes: {usage['cache_creation_input_tokens']} tokens")
-
-                # Update session totals (OPTIONAL)
-                st.session_state.total_usage["input_tokens"] += usage.get(
-                    "input_tokens", 0)
-                st.session_state.total_usage["output_tokens"] += usage.get(
-                    "output_tokens", 0)
-                st.session_state.total_usage["total_cost"] += cost
-                st.session_state.total_usage["request_count"] += 1
-
-    # Add assistant message
-    st.session_state.messages.append(
-        {"role": "assistant", "content": response})
+    process_user_input(prompt)

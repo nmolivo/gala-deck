@@ -6,6 +6,7 @@ __pycache__/
 .env
 vapi-doc-coding-mcp/
 .streamlit/
+vapi-doc-coding-mcp/
 
 # C extensions
 *.so

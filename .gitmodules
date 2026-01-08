@@ -1,0 +1,3 @@
+[submodule "vapi-doc-coding-mcp"]
+	path = vapi-doc-coding-mcp
+	url = https://github.com/vedicastroapidev/vapi-doc-coding-mcp.git
