@@ -11,7 +11,7 @@ MCP_SERVER_COMMAND = "node"
 MCP_SERVER_PATH = os.path.abspath("vapi-doc-coding-mcp/build/index.js")
 
 # UI configuration
-APP_TITLE = "💬 Gala Deck Chat"
+APP_TITLE = "🔮 Gala Deck Chat"
 CHAT_PLACEHOLDER = "Ask about Vedic Astro API..."
 PRICING = {
     "claude-sonnet-4-20250514": {

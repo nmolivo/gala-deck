@@ -4,9 +4,7 @@ __pycache__/
 *$py.class
 .venv
 .env
-vapi-doc-coding-mcp/
 .streamlit/
-vapi-doc-coding-mcp/
 
 # C extensions
 *.so

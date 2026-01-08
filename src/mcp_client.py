@@ -31,9 +31,13 @@ class MCPClient:
             args=self.args,
             env=get_default_environment()
         )
-
-        async with stdio_client(params) as (read, write):
-            yield read, write
+        try:
+            async with stdio_client(params) as (read, write):
+                logger.debug("Connected to MCP server!")
+                yield read, write
+        except Exception as e:
+            logger.error(f"Error in get_tools_and_session: {e}", exc_info=True)
+            raise MCPConnectionError(MCP_SERVER_PATH, str(e))
 
     async def initialize_session(self, read, write):
         """Initialize a session and return tools"""
@@ -42,7 +46,7 @@ class MCPClient:
             session = ClientSession(read, write)
 
             logger.info("Calling session.initialize()...")
-            await asyncio.wait_for(session.initialize(), timeout=10.0)
+            await asyncio.wait_for(session.initialize(), timeout=60.0)
             logger.info("Session initialized successfully!")
 
             logger.info("Calling session.list_tools()...")

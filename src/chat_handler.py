@@ -102,7 +102,11 @@ class ChatHandler:
             logger.error(f"API Error: {str(e)}")
             return str(e), {}
         except Exception as e:
-            logger.error(f"Unexpected error: {str(e)}")
-            return f"❌ **Unexpected Error**\n\n{str(e)}", {}
+            if hasattr(e, '__cause__') and hasattr(e.__cause__, 'exceptions'):
+                logger.error("Multiple exceptions occurred:")
+                for sub_exception in e.__cause__.exceptions:
+                    logger.error(f"Sub-exception: {sub_exception}")
+            else:
+                logger.error(f"Unexpected error: {str(e)}", exc_info=True)
         finally:
             loop.close()

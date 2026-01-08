@@ -8,12 +8,12 @@ from src.config import APP_TITLE, CHAT_PLACEHOLDER, calculate_cost
 from src.chat_handler import ChatHandler
 
 # Page config
-st.set_page_config(page_title="Gala Deck Chat", page_icon="💬")
+st.set_page_config(page_title="Gala Deck Chat", page_icon="🔮")
 st.title(APP_TITLE)
 
 # Force logs to stdout (Streamlit's terminal)
 logging.basicConfig(
-    level=logging.INFO,
+    level=logging.DEBUG,
     format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',
     handlers=[
         logging.StreamHandler(sys.stdout)  # Explicitly use stdout
@@ -22,7 +22,7 @@ logging.basicConfig(
 )
 
 logger = logging.getLogger(__name__)
-logger.info("🚀 App starting - you should see this!")
+logger.info("🚀 App starting")
 
 # Initialize Anthropic client
 if "anthropic_client" not in st.session_state:
